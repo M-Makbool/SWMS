@@ -1,0 +1,5 @@
+{
+    "sketch": "SWMS_Robot_SW.ino",
+    "configuration": "FlashFreq=80,UploadSpeed=921600",
+    "board": "esp32:esp32:nodemcu-32s"
+}
