@@ -5,8 +5,8 @@
 const char *ssid = "MAK WiFi";
 const char *password = "BasYaBaba7a";
 const char *mqtt_server = "192.168.1.7";
-const char *publish = "Blue";
-const char *subscribe = "BlueSlave";
+const char *publish = "Green";
+const char *subscribe = "GreenSlave";
 WiFiClient espClient;
 PubSubClient client(espClient);
 unsigned long lastMsg = 0;
@@ -217,7 +217,7 @@ void reconnect()
   {
     com.print("Attempting MQTT connection...");
     // Create a random client ID
-    String clientId = "SWMSClient-";
+    String clientId = "Green-";
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
     if (client.connect(clientId.c_str()))

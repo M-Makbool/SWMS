@@ -19,9 +19,10 @@ uint8_t iindex = 0;
 int Total[SAZ];
 int16_t Readings[SAZ][numReading];
 int16_t Maximum[SAZ], Minimum[SAZ], Threshold[SAZ];
+int16_t Sens[SAZ], T[SAZ];
+
 int B;
 bool toggle;
-
 
 double correlation(int16_t *X, int16_t *Y)
 {
@@ -85,7 +86,7 @@ void get_sensor_raw_value(int16_t *sensor_value, bool Toggle)
   for (int i = 0; i < SAZ; i++)
     avareg += sensor_value[i];
   avareg /= SAZ;
-  B = Bright.compute(300, avareg, 1, 255);
+  //  B = Bright.compute(300, avareg, 1, 255);
 }
 
 void get_sensor_smoothed_value(int16_t *sensor_value, bool mode)
@@ -134,9 +135,8 @@ void calibrate(unsigned long calTime, bool mode)
 
 int8_t get_robot_position(bool mode)
 {
-  int16_t Sens[SAZ], T[SAZ];
   int8_t Po = 0;
-  double r[SAZ * 2];
+  double r[SAZ * 2 + 2];
   get_sensor_raw_value(Sens, mode);
   for (int i = 0; i < SAZ; i++)
     T[i] = Maximum[i];
@@ -156,11 +156,23 @@ int8_t get_robot_position(bool mode)
     T[i] = Maximum[i];
     T[i + 1] = Maximum[i + 1];
   }
-  // r[-2] = correlation(Sens, Minimum);
-  r[-1] = correlation(Sens, Minimum);
-  for (int i = 1; i < (SAZ * 2) ; i++)
+
+  T[1] = Minimum[1];
+  T[2] = Minimum[2];
+  T[3] = Minimum[3];
+
+  r[SAZ * 2 + 1] = correlation(Sens, T);
+  r[SAZ * 2 - 1] = correlation(Sens, Minimum);
+  r[SAZ * 2] = correlation(Sens, Maximum);
+
+  for (int i = 1; i < (SAZ * 2 + 2); i++)
     if (r[i] > r[Po])
       Po = i;
+  if (Po > 8)
+    if (Sens[1] < Threshold[1] && Sens[2] < Threshold[2] && Sens[3] < Threshold[3] && (Sens[0] < Threshold[0] || Sens[4] < Threshold[4]))
+      Po = 9;
+    else
+      Po = 10;
   return Po - SAZ + 1;
 }
 
