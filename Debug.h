@@ -8,7 +8,7 @@ BluetoothSerial SerialBT;
 #define com Serial
 #endif
 
-bool flag = 0;
+bool flag = 0, flag1 = 0;
 
 void serial_debug()
 {

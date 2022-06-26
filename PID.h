@@ -11,9 +11,9 @@ class PID
 
     PID()
     {
-      K[0] = 0.1;
-      K[1] = 0.3;
-      K[2] = 0.13;
+      K[0] = 0.07;
+      K[1] = 0.03;
+      K[2] = 0.03;
     }
 
     double compute(long setPoint, long sensor, double minOut, double maxOut)

@@ -8,8 +8,8 @@
 const int8_t neiCells[4][2] = {{ -1, 0}, {0, 1}, {1, 0}, {0, -1}};
 const int8_t neiWalls[4][2] = {{0, 0}, {0, 1}, {1, 0}, {0, 0}};
 
-#define ROWS 10
-#define COLUMNS 10
+#define ROWS 7
+#define COLUMNS 7
 
 class Cells
 {

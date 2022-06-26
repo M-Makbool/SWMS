@@ -7,12 +7,12 @@
 #include "mqtt.h"
 #include "Cell.h"
 
-Cells white, blue;
+Cells white, blue, green;
 
 void setup()
 {
 #ifdef BT
-  SerialBT.begin("ESP32_Sensor");
+  SerialBT.begin("White");
 #else
   Serial.begin(115200);
 #endif
@@ -27,6 +27,10 @@ void setup()
   client.setCallback(callback);
   if (!client.connected())
     reconnect();
+
+  green.mouseColumn = 0;
+  green.mouseRow = 0;
+  green.mouseHeading = 0;
 }
 
 void loop()
@@ -35,10 +39,40 @@ void loop()
     reconnect();
   client.loop();
   serial_debug();
+  Position = get_robot_position(toggle);
+  Move_Cell(3);
+}
+
+void Move_Cell(byte N)
+{
   if (flag)
-    follow_line(Speed);
-  else
-    follow_line(0);
-  snprintf(msg, MSG_BUFFER_SIZE, "\nposition is %d", Position);
-  client.publish(publish, msg);
+  {
+    for (int8_t i = 0; i < N; i++)
+    {
+      forword(Speed);
+      delay(250);
+      do
+      {
+        Position = get_robot_position(toggle);
+        switch (Position)
+        {
+        case 6:
+          break;
+        case 5:
+          if (get_robot_position(toggle) == 5)
+          {
+            follow_line(0);
+            break;
+          }
+        default:
+          follow_line(Speed);
+        }
+      } while (get_robot_position(toggle) != 5);
+      green.mouseRow++;
+    }
+    forword(0);
+    flag = false;
+    snprintf(msg, MSG_BUFFER_SIZE, "\nRow is %d", green.mouseRow);
+    client.publish(publish, msg);
+  }
 }

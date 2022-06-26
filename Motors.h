@@ -14,13 +14,11 @@ int Speed = 0;
 
 void follow_line(int S)
 {
-  Position = get_robot_position(toggle);
   int E = Line.compute(0, Position, S * (-1), S);
   analogWrite(MOTOR2_C1, constrain(S - E, 0, S));
   analogWrite(MOTOR2_C2, 0);
   analogWrite(MOTOR1_C1, constrain(S + E, 0, S));
   analogWrite(MOTOR1_C2, 0);
-
 }
 
 int speed_handel(int8_t motor, int S)
